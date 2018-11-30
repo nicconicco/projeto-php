@@ -10,18 +10,24 @@ class Sql extends PDO {
 	}
 
 	private function setParams($statments, $parameters = array()) {
-		foreach ($parameters as $key => $value) {
-			$this->setParams($statments, $key, $value);
+		if (is_array($parameters) || is_object($parameters)) {
+			foreach ($parameters as $key => $value) {
+				$this->setParams($statments, $key, $value);
+			}
 		}
 	}
 
 	private function setParam($statments, $key, $value) {
-			$statments->bindParam($key, $value);
+		$statments->bindParam($key, $value);
 	}
 
 	public function query($rawQuery, $param = array()) {
 		$stmt = $this->conn->prepare($rawQuery);
-		$this->setParams($stmt, $param);
+		
+		if (sizeof($param) > 0) {
+			$this->setParams($stmt, $param);
+		}
+
 		$stmt->execute();
 		return $stmt;
 	}
