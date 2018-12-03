@@ -83,7 +83,6 @@ class Usuario {
 		$this->setDtCadastro(new DateTime($data['dtcadastro']));
 	}
 
-
 	/*
 	 *
 	 *	DELIMITER $$
@@ -96,7 +95,7 @@ class Usuario {
 	 *
 	 *	BEGIN
 	 *		INSERT INTO tb_usuarios (deslogin, dessenha) VALUES (pdeslogin, pdessenha);
-	 *		SELECT * FROM usuarios WHERE idusuario = LAST_INSERT_ID();
+	 *		SELECT * FROM tb_usuarios WHERE idusuario = LAST_INSERT_ID();
 	 * 	END
 	 */
 
