@@ -9,5 +9,7 @@ require_once("config.php");
 	// echo json_encode($usuarios);
 
 	$root = new Usuario();
-	$root->loadById("2");
+	$root->loadById("3");
+
+	echo $root;
  ?>

@@ -19,7 +19,7 @@ class Usuario {
 		return $this->deslogin;
 	}
 
-	public function setIDeslogin($deslogin) {
+	public function setDeslogin($deslogin) {
 		$this->deslogin = $deslogin;
 	}
 
@@ -27,15 +27,15 @@ class Usuario {
 		return $this->dessenha;
 	}
 
-	public function setDessenha($dessenha) {
-		$this->dessenha = $dessenha;
+	public function setDessenha($value) {
+		$this->dessenha = $value;
 	}
 
 	public function getDtCadastro() {
 		return $this->dtcadastro;
 	}
 
-	public function setIDtCadastro($dtcadastro) {
+	public function setDtCadastro($dtcadastro) {
 		$this->dtcadastro = $dtcadastro;
 	}
 
@@ -43,26 +43,32 @@ class Usuario {
 
 		$sql = new Sql();
 
-		// a partir do PHP 5.4
-		$array = [
-		    ":ID" => $id,
-		];
-
-		$array = array(
-    	    ":ID" => $id,
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID",
+		    array(":ID"=>$id)
 		);
 
-		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", $array);
 
 		if (count($results) > 0) {
 
 			$row = $results[0];
 
 			$this->setIdUsuario($row['idusuario']);
+			// echo "id = " . $row['idusuario'];
+			// echo "<br>";
+			
+
 			$this->setDeslogin($row['deslogin']);
+			// echo "deslogin = " . $row['deslogin'];
+			// echo "<br>";
+
 			$this->setDessenha($row['dessenha']);
-			$this->setIDtCadastro(new DateTime($row['dtcadastro']));
-		}
+			// echo "dessenha = " . $row['dessenha'];
+			// echo "<br>";
+
+			$this->setDtCadastro(new DateTime($row['dtcadastro']));
+			//echo "DateTime = " . new DateTime($row['dtcadastro']);
+			//echo "<br>";
+		} 
 	}
 
 	public function __toString() {
