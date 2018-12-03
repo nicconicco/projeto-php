@@ -47,28 +47,75 @@ class Usuario {
 		    array(":ID"=>$id)
 		);
 
-
 		if (count($results) > 0) {
-
-			$row = $results[0];
-
-			$this->setIdUsuario($row['idusuario']);
-			// echo "id = " . $row['idusuario'];
-			// echo "<br>";
-			
-
-			$this->setDeslogin($row['deslogin']);
-			// echo "deslogin = " . $row['deslogin'];
-			// echo "<br>";
-
-			$this->setDessenha($row['dessenha']);
-			// echo "dessenha = " . $row['dessenha'];
-			// echo "<br>";
-
-			$this->setDtCadastro(new DateTime($row['dtcadastro']));
-			//echo "DateTime = " . new DateTime($row['dtcadastro']);
-			//echo "<br>";
+			$this->setData($results[0]);
 		} 
+	}
+
+	public static function getList() {
+		$sql = new Sql();
+		return  $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin");
+	}
+
+	public static function search($login) {
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(':SEARCH'=>"%".$login."%"));
+	}
+
+	public function login($login, $password) {
+		$sql = new Sql();
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
+			":LOGIN"=>$login,
+			":PASSWORD"=>$password
+		));
+		
+		if (count($results) > 0) {
+			$this->setData($results[0]);
+		} else {
+			throw new Exception("Login e/ou senha inválidos.");
+		}
+	}
+
+	public function setData($data) {
+		$this->setIdUsuario($data['idusuario']);
+		$this->setDeslogin($data['deslogin']);
+		$this->setDessenha($data['dessenha']);
+		$this->setDtCadastro(new DateTime($data['dtcadastro']));
+	}
+
+
+	/*
+	 *
+	 *	DELIMITER $$
+	 *
+	 *	CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_usuarios_insert`(
+	 *
+	 *	pdeslogin VARCHAR(64),
+	 *	pdessenha VARCHAR(256)
+	 *	)
+	 *
+	 *	BEGIN
+	 *		INSERT INTO tb_usuarios (deslogin, dessenha) VALUES (pdeslogin, pdessenha);
+	 *		SELECT * FROM usuarios WHERE idusuario = LAST_INSERT_ID();
+	 * 	END
+	 */
+
+	public function insert() {
+		$sql = new Sql();
+		
+		$results = $sql->select("CALL sp_usuarios_insert( :LOGIN, :PASSWORD)", array(
+			':LOGIN'=>$this->getDeslogin(),
+			':PASSWORD'=>$this->getDessenha()
+		));
+
+		if(count($results) > 0) {
+			$this->setData($results[0]);
+		} 
+	}
+
+	public function __construct($login, $password) {
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
 	}
 
 	public function __toString() {
