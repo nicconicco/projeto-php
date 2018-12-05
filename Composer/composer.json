@@ -1,0 +1,15 @@
+{
+    "name": "hcodebr/composer",
+    "description": "Aula de Php 7",
+    "type": "project",
+    "authors": [
+        {
+            "name": "nicconicco",
+            "email": "nicolaugalves@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "monolog/monolog":"1.0.*"
+    }
+}
